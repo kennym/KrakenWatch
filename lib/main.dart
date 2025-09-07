@@ -56,7 +56,7 @@ class _PortfolioScreenState extends State<PortfolioScreen> {
         title: const Text('KrakenWatch'),
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
       ),
-      body: Padding(
+      body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
