@@ -30,8 +30,8 @@ class PortfolioScreen extends StatefulWidget {
 }
 
 class _PortfolioScreenState extends State<PortfolioScreen> {
-  double _usdtBalance = 0.0;
-  double _btcBalance = 0.0;
+  double _portfolioValueUsdt = 0.0;
+  double _portfolioValueBtc = 0.0;
   bool _isLoading = false;
   String _errorMessage = '';
   
@@ -59,7 +59,7 @@ class _PortfolioScreenState extends State<PortfolioScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const Text(
-              'Portfolio Balance',
+              'Total Portfolio Value',
               style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 20),
@@ -72,11 +72,11 @@ class _PortfolioScreenState extends State<PortfolioScreen> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         const Text(
-                          'USDT Balance',
+                          'Portfolio Value (USDT)',
                           style: TextStyle(fontSize: 18),
                         ),
                         Text(
-                          '\$${_usdtBalance.toStringAsFixed(2)}',
+                          '\$${_portfolioValueUsdt.toStringAsFixed(2)}',
                           style: const TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.bold,
@@ -90,11 +90,11 @@ class _PortfolioScreenState extends State<PortfolioScreen> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         const Text(
-                          'BTC Balance',
+                          'Portfolio Value (BTC)',
                           style: TextStyle(fontSize: 18),
                         ),
                         Text(
-                          '₿${_btcBalance.toStringAsFixed(8)}',
+                          '₿${_portfolioValueBtc.toStringAsFixed(8)}',
                           style: const TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.bold,
@@ -142,20 +142,26 @@ class _PortfolioScreenState extends State<PortfolioScreen> {
     });
     
     try {
+      // Fetch both balance and market prices
       final balance = await _krakenApi.getBalance();
+      final prices = await _krakenApi.getTicker();
       
       if (balance.error.isNotEmpty) {
         throw Exception('Kraken API Error: ${balance.error.join(', ')}');
       }
       
+      // Calculate total portfolio value
+      final portfolioValueUsd = _krakenApi.calculatePortfolioValueInUsd(balance.result, prices);
+      final portfolioValueBtc = _krakenApi.convertUsdToBtc(portfolioValueUsd, prices);
+      
       setState(() {
-        _usdtBalance = _krakenApi.calculateTotalInUsdt(balance.result);
-        _btcBalance = _krakenApi.calculateTotalInBtc(balance.result);
+        _portfolioValueUsdt = portfolioValueUsd;
+        _portfolioValueBtc = portfolioValueBtc;
         _isLoading = false;
       });
     } catch (e) {
       setState(() {
-        _errorMessage = 'Failed to load balances: ${e.toString()}';
+        _errorMessage = 'Failed to load portfolio: ${e.toString()}';
         _isLoading = false;
       });
     }
