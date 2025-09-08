@@ -40,10 +40,12 @@ class PortfolioHolding {
     final parts = currency.split('.');
     if (parts.length > 1) {
       final suffixMap = {
-        'F': 'Futures',
-        'S': 'Staking', 
-        'M': 'Margin',
-        'P': 'Perpetual',
+        'F': 'Kraken Rewards',    // Auto-earning rewards
+        'S': 'Legacy Staking',    // Legacy staking system
+        'M': 'Opt-in Rewards',    // Opt-in rewards assets
+        'B': 'Yield-Bearing',     // New yield-bearing products
+        'T': 'Tokenized',         // Tokenized assets
+        'P': 'Perpetual',         // Keep this for any actual perpetual futures
       };
       return suffixMap[parts[1]] ?? parts[1];
     }
