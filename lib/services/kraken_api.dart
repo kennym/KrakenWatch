@@ -279,6 +279,9 @@ class KrakenApi {
     List<PortfolioHolding> holdings = [];
     double totalPortfolioValue = 0.0;
     
+    // Get BTC/USD rate for conversions
+    final btcUsdRate = _getBtcUsdPrice(prices);
+    
     // First pass: calculate total portfolio value
     balances.forEach((currency, balanceStr) {
       final balance = parseBalance(balances, currency);
@@ -294,22 +297,34 @@ class KrakenApi {
       }
     });
     
-    // Second pass: create holdings with percentages
+    // Second pass: create holdings with percentages and BTC values
     balances.forEach((currency, balanceStr) {
       final balance = parseBalance(balances, currency);
       if (balance <= 0) return;
       
       double usdPrice = 0.0;
       double usdValue = 0.0;
+      double btcPrice = 0.0;
+      double btcValue = 0.0;
       bool isPriced = true;
       
       if (_isUsdCurrency(currency)) {
         usdPrice = 1.0;
         usdValue = balance;
+        // Convert USD to BTC
+        if (btcUsdRate > 0) {
+          btcPrice = 1.0 / btcUsdRate;
+          btcValue = balance / btcUsdRate;
+        }
       } else {
         usdPrice = _findUsdPrice(currency, prices);
         if (usdPrice > 0) {
           usdValue = balance * usdPrice;
+          // Convert to BTC: (amount * USD price) / BTC-USD rate
+          if (btcUsdRate > 0) {
+            btcPrice = usdPrice / btcUsdRate;
+            btcValue = usdValue / btcUsdRate;
+          }
         } else {
           isPriced = false;
         }
@@ -324,6 +339,8 @@ class KrakenApi {
         balance: balance,
         usdPrice: isPriced ? usdPrice : null,
         usdValue: usdValue,
+        btcPrice: (isPriced && btcUsdRate > 0) ? btcPrice : null,
+        btcValue: btcValue,
         portfolioPercentage: portfolioPercentage,
         isPriced: isPriced,
       ));
