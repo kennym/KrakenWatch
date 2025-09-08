@@ -1,17 +1,27 @@
 # KrakenWatch 🦑
 
-A personal portfolio tracker for Kraken cryptocurrency exchange that displays your account balance in multiple currencies simultaneously.
+A beautiful, privacy-focused portfolio tracker for Kraken cryptocurrency exchange that shows your complete portfolio in both USDT and BTC simultaneously.
 
-## Features
+![KrakenWatch Screenshot](screenshot.png)
 
-- **Multi-Currency View**: See your total balance in both USDT and BTC at the same time
-- **Real-Time Updates**: Refresh your balances directly from Kraken's API
-- **Secure Integration**: Uses official Kraken API with read-only permissions
-- **Clean UI**: Simple, Material Design interface optimized for quick balance checks
+## ✨ Features
 
-## Why KrakenWatch?
+- **📊 Complete Portfolio Overview**: View your entire Kraken portfolio with ALL holdings (including futures, staking, margin positions)
+- **💰 Dual Currency Display**: See total portfolio value in both USDT and BTC at the same time
+- **🔒 Privacy Mode**: Hide sensitive values with one tap - perfect for public viewing or screen sharing
+- **⚡ Real-Time Sync**: Auto-refresh on startup + manual sync button in header
+- **🎨 Kraken-Themed UI**: Beautiful dark theme with Kraken's signature purple colors
+- **🔐 Secure & Read-Only**: Uses official Kraken API with minimal "Query Funds" permissions
+- **📱 Native Performance**: Built with Flutter for smooth, native macOS experience
 
-The official Kraken mobile app only allows you to view your portfolio in one currency at a time. KrakenWatch solves this by showing your balances in multiple currencies simultaneously, giving you a better overview of your holdings.
+## 🎯 Why KrakenWatch?
+
+The official Kraken app has limitations:
+- ❌ Can only view portfolio in ONE currency at a time
+- ❌ No comprehensive view of ALL holdings (futures, staking, etc.)
+- ❌ No privacy mode for public viewing
+
+KrakenWatch solves these problems by providing a complete, dual-currency portfolio overview with privacy controls.
 
 ## Getting Started
 
