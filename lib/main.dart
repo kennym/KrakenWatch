@@ -37,6 +37,7 @@ class _PortfolioScreenState extends State<PortfolioScreen> {
   bool _isLoading = false;
   String _errorMessage = '';
   DateTime? _lastRefresh;
+  bool _privacyMode = true;
   
   late final KrakenApi _krakenApi;
 
@@ -55,6 +56,19 @@ class _PortfolioScreenState extends State<PortfolioScreen> {
       appBar: AppBar(
         title: const Text('KrakenWatch'),
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+        actions: [
+          IconButton(
+            onPressed: () {
+              setState(() {
+                _privacyMode = !_privacyMode;
+              });
+            },
+            icon: Icon(
+              _privacyMode ? Icons.visibility_off : Icons.visibility,
+            ),
+            tooltip: _privacyMode ? 'Show values' : 'Hide values',
+          ),
+        ],
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
@@ -79,11 +93,11 @@ class _PortfolioScreenState extends State<PortfolioScreen> {
                           style: TextStyle(fontSize: 18),
                         ),
                         Text(
-                          '\$${_portfolioValueUsdt.toStringAsFixed(2)}',
-                          style: const TextStyle(
+                          _privacyMode ? 'Hidden for privacy' : '\$${_portfolioValueUsdt.toStringAsFixed(2)}',
+                          style: TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.bold,
-                            color: Colors.green,
+                            color: _privacyMode ? Colors.grey : Colors.green,
                           ),
                         ),
                       ],
@@ -97,11 +111,11 @@ class _PortfolioScreenState extends State<PortfolioScreen> {
                           style: TextStyle(fontSize: 18),
                         ),
                         Text(
-                          '₿${_portfolioValueBtc.toStringAsFixed(8)}',
-                          style: const TextStyle(
+                          _privacyMode ? 'Hidden for privacy' : '₿${_portfolioValueBtc.toStringAsFixed(8)}',
+                          style: TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.bold,
-                            color: Colors.orange,
+                            color: _privacyMode ? Colors.grey : Colors.orange,
                           ),
                         ),
                       ],
@@ -232,63 +246,89 @@ class _PortfolioScreenState extends State<PortfolioScreen> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(
-                  holding.balance.toStringAsFixed(8),
-                  style: TextStyle(
-                    fontSize: 14,
-                    color: Colors.grey[700],
+                if (_privacyMode) ...[
+                  // In privacy mode, show "Hidden for privacy"
+                  Text(
+                    'Hidden for privacy',
+                    style: TextStyle(
+                      fontSize: 14,
+                      color: Colors.grey[600],
+                      fontStyle: FontStyle.italic,
+                    ),
                   ),
-                ),
+                ] else ...[
+                  // In normal mode, show balance
+                  Text(
+                    holding.balance.toStringAsFixed(8),
+                    style: TextStyle(
+                      fontSize: 14,
+                      color: Colors.grey[700],
+                    ),
+                  ),
+                ],
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
-                    if (holding.isPriced && holding.usdValue > 0) ...[
-                      // USD and BTC values side by side
-                      Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Text(
-                            holding.formatUsdValue(),
-                            style: const TextStyle(
-                              fontSize: 14,
-                              fontWeight: FontWeight.w600,
-                              color: Colors.green,
-                            ),
-                          ),
-                          const Text(
-                            ' | ',
-                            style: TextStyle(
-                              fontSize: 14,
-                              color: Colors.grey,
-                            ),
-                          ),
-                          Text(
-                            holding.formatBtcValue(),
-                            style: const TextStyle(
-                              fontSize: 14,
-                              fontWeight: FontWeight.w600,
-                              color: Colors.orange,
-                            ),
-                          ),
-                        ],
-                      ),
-                      if (holding.usdPrice != null && holding.usdPrice! != 1.0)
-                        Text(
-                          '@\$${holding.usdPrice!.toStringAsFixed(6)}',
-                          style: TextStyle(
-                            fontSize: 12,
-                            color: Colors.grey[500],
-                          ),
-                        ),
-                    ] else ...[
+                    if (_privacyMode) ...[
+                      // In privacy mode, only show "Hidden for privacy"
                       Text(
-                        'No price data',
+                        'Hidden for privacy',
                         style: TextStyle(
-                          fontSize: 12,
-                          color: Colors.orange[700],
+                          fontSize: 14,
+                          color: Colors.grey[600],
                           fontStyle: FontStyle.italic,
                         ),
                       ),
+                    ] else ...[
+                      // In normal mode, show full values
+                      if (holding.isPriced && holding.usdValue > 0) ...[
+                        // USD and BTC values side by side
+                        Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Text(
+                              holding.formatUsdValue(),
+                              style: const TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.w600,
+                                color: Colors.green,
+                              ),
+                            ),
+                            const Text(
+                              ' | ',
+                              style: TextStyle(
+                                fontSize: 14,
+                                color: Colors.grey,
+                              ),
+                            ),
+                            Text(
+                              holding.formatBtcValue(),
+                              style: const TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.w600,
+                                color: Colors.orange,
+                              ),
+                            ),
+                          ],
+                        ),
+                        if (holding.usdPrice != null && holding.usdPrice! != 1.0)
+                          Text(
+                            '@\$${holding.usdPrice!.toStringAsFixed(6)}',
+                            style: TextStyle(
+                              fontSize: 12,
+                              color: Colors.grey[500],
+                            ),
+                          ),
+                      ] else ...[
+                        Text(
+                          'No price data',
+                          style: TextStyle(
+                            fontSize: 12,
+                            color: Colors.orange[700],
+                            fontStyle: FontStyle.italic,
+                          ),
+                        ),
+                      ],
                     ],
                   ],
                 ),
