@@ -15,8 +15,22 @@ class KrakenWatchApp extends StatelessWidget {
     return MaterialApp(
       title: 'KrakenWatch',
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: const Color(0xFF5741D9), // Kraken's signature purple
+          brightness: Brightness.dark,
+        ),
         useMaterial3: true,
+        cardTheme: CardThemeData(
+          color: const Color(0xFF2A2A2A),
+          elevation: 4,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+            side: BorderSide(
+              color: const Color(0xFF5741D9).withValues(alpha: 0.3),
+              width: 1,
+            ),
+          ),
+        ),
       ),
       home: const PortfolioScreen(),
     );
@@ -48,15 +62,28 @@ class _PortfolioScreenState extends State<PortfolioScreen> {
       apiKey: ApiConfig.krakenApiKey,
       apiSecret: ApiConfig.krakenApiSecret,
     );
+    // Auto-refresh portfolio on app start
+    _loadBalances();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('KrakenWatch'),
+        title: const Text('KrakenWatch 🦑'),
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         actions: [
+          IconButton(
+            onPressed: _isLoading ? null : _loadBalances,
+            icon: _isLoading 
+                ? const SizedBox(
+                    width: 20,
+                    height: 20,
+                    child: CircularProgressIndicator(strokeWidth: 2),
+                  )
+                : const Icon(Icons.sync),
+            tooltip: 'Refresh portfolio',
+          ),
           IconButton(
             onPressed: () {
               setState(() {
@@ -75,11 +102,6 @@ class _PortfolioScreenState extends State<PortfolioScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text(
-              'Total Portfolio Value',
-              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 20),
             Card(
               child: Padding(
                 padding: const EdgeInsets.all(16.0),
@@ -89,7 +111,7 @@ class _PortfolioScreenState extends State<PortfolioScreen> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         const Text(
-                          'Portfolio Value (USDT)',
+                          '💰 Portfolio Value (USDT)',
                           style: TextStyle(fontSize: 18),
                         ),
                         Text(
@@ -107,7 +129,7 @@ class _PortfolioScreenState extends State<PortfolioScreen> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         const Text(
-                          'Portfolio Value (BTC)',
+                          '₿ Portfolio Value (BTC)',
                           style: TextStyle(fontSize: 18),
                         ),
                         Text(
@@ -137,15 +159,6 @@ class _PortfolioScreenState extends State<PortfolioScreen> {
                 ),
               ),
             if (_errorMessage.isNotEmpty) const SizedBox(height: 20),
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton(
-                onPressed: _isLoading ? null : _loadBalances,
-                child: _isLoading
-                    ? const CircularProgressIndicator()
-                    : const Text('Refresh Portfolio'),
-              ),
-            ),
             if (_lastRefresh != null)
               Padding(
                 padding: const EdgeInsets.only(top: 8.0),
@@ -160,7 +173,7 @@ class _PortfolioScreenState extends State<PortfolioScreen> {
             if (_holdings.isNotEmpty) ...[
               const SizedBox(height: 30),
               const Text(
-                'Holdings',
+                '📊 Holdings',
                 style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 16),
