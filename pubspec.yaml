@@ -49,6 +49,9 @@ dependencies:
   
   # SVG support
   flutter_svg: ^2.0.9
+  
+  # State management
+  flutter_riverpod: ^2.4.9
 
 dev_dependencies:
   flutter_test:
