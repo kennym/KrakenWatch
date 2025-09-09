@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'services/kraken_api.dart';
 import 'config/api_config.dart';
 import 'models/portfolio_holding.dart';
+import 'widgets/animated_kraken_logo.dart';
 
 void main() {
   runApp(const KrakenWatchApp());
@@ -70,7 +71,17 @@ class _PortfolioScreenState extends State<PortfolioScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('KrakenWatch 🦑'),
+        title: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const AnimatedKrakenLogo(
+              width: 32,
+              height: 32,
+            ),
+            const SizedBox(width: 8),
+            const Text('KrakenWatch'),
+          ],
+        ),
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         actions: [
           IconButton(
