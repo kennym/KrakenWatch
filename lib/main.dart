@@ -64,19 +64,6 @@ class PortfolioScreen extends ConsumerWidget {
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         actions: [
           IconButton(
-            onPressed: portfolioState.isLoading 
-                ? null 
-                : () => ref.read(portfolioProvider.notifier).refreshPortfolio(),
-            icon: portfolioState.isLoading
-                ? const SizedBox(
-                    width: 20,
-                    height: 20,
-                    child: CircularProgressIndicator(strokeWidth: 2),
-                  )
-                : const Icon(Icons.sync),
-            tooltip: 'Refresh portfolio',
-          ),
-          IconButton(
             onPressed: () => ref.read(privacyModeProvider.notifier).update((state) => !state),
             icon: Icon(
               privacyMode ? Icons.visibility_off : Icons.visibility,
@@ -85,37 +72,51 @@ class PortfolioScreen extends ConsumerWidget {
           ),
         ],
       ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const PortfolioValueCard(),
-            const SizedBox(height: 20),
-            if (portfolioState.errorMessage != null)
-              Card(
-                color: Colors.red.shade50,
-                child: Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Text(
-                    portfolioState.errorMessage!,
-                    style: TextStyle(color: Colors.red.shade800),
-                  ),
-                ),
-              ),
-            if (portfolioState.errorMessage != null) const SizedBox(height: 20),
+      body: RefreshIndicator(
+        onRefresh: () async {
+          await ref.read(portfolioProvider.notifier).refreshPortfolio();
+        },
+        triggerMode: RefreshIndicatorTriggerMode.anywhere,
+        child: CustomScrollView(
+          physics: const AlwaysScrollableScrollPhysics(),
+          slivers: [
             if (portfolioState.lastRefresh != null)
-              Padding(
-                padding: const EdgeInsets.only(top: 8.0),
-                child: Text(
-                  'Last updated: ${TimeFormatter.formatTime(portfolioState.lastRefresh!)}',
-                  style: TextStyle(
-                    color: Colors.grey[600],
-                    fontSize: 12,
+              SliverToBoxAdapter(
+                child: Container(
+                  padding: const EdgeInsets.symmetric(vertical: 8.0),
+                  child: Center(
+                    child: Text(
+                      'Last updated: ${TimeFormatter.formatTime(portfolioState.lastRefresh!)}',
+                      style: TextStyle(
+                        color: Colors.grey[600],
+                        fontSize: 12,
+                      ),
+                    ),
                   ),
                 ),
               ),
-            const HoldingsList(),
+            SliverPadding(
+              padding: const EdgeInsets.all(16.0),
+              sliver: SliverList(
+                delegate: SliverChildListDelegate([
+                  const PortfolioValueCard(),
+                  const SizedBox(height: 20),
+                  if (portfolioState.errorMessage != null)
+                    Card(
+                      color: Colors.red.shade50,
+                      child: Padding(
+                        padding: const EdgeInsets.all(16.0),
+                        child: Text(
+                          portfolioState.errorMessage!,
+                          style: TextStyle(color: Colors.red.shade800),
+                        ),
+                      ),
+                    ),
+                  if (portfolioState.errorMessage != null) const SizedBox(height: 20),
+                  const HoldingsList(),
+                ]),
+              ),
+            ),
           ],
         ),
       ),

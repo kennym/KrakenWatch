@@ -18,18 +18,23 @@ class PortfolioValueCard extends ConsumerWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                const Text(
-                  '💰 Portfolio Value (USDT)',
-                  style: TextStyle(fontSize: 18),
+                const Expanded(
+                  child: Text(
+                    '💰USDT',
+                    style: TextStyle(fontSize: 18),
+                  ),
                 ),
-                Text(
-                  privacyMode 
-                      ? 'Hidden for privacy' 
-                      : '\$${portfolioState.portfolioValueUsdt.toStringAsFixed(2)}',
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                    color: privacyMode ? Colors.grey : Colors.green,
+                Flexible(
+                  child: Text(
+                    privacyMode 
+                        ? 'Hidden for privacy' 
+                        : '\$${portfolioState.portfolioValueUsdt.toStringAsFixed(2)}',
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      color: privacyMode ? Colors.grey : Colors.green,
+                    ),
+                    textAlign: TextAlign.end,
                   ),
                 ),
               ],
@@ -38,18 +43,23 @@ class PortfolioValueCard extends ConsumerWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                const Text(
-                  '₿ Portfolio Value (BTC)',
-                  style: TextStyle(fontSize: 18),
+                const Expanded(
+                  child: Text(
+                    '₿ BTC',
+                    style: TextStyle(fontSize: 18),
+                  ),
                 ),
-                Text(
-                  privacyMode 
-                      ? 'Hidden for privacy' 
-                      : '₿${portfolioState.portfolioValueBtc.toStringAsFixed(8)}',
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                    color: privacyMode ? Colors.grey : Colors.orange,
+                Flexible(
+                  child: Text(
+                    privacyMode 
+                        ? 'Hidden for privacy' 
+                        : '₿${portfolioState.portfolioValueBtc.toStringAsFixed(8)}',
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      color: privacyMode ? Colors.grey : Colors.orange,
+                    ),
+                    textAlign: TextAlign.end,
                   ),
                 ),
               ],
