@@ -51,3 +51,4 @@ app.*.map.json
 
 # API Configuration - KEEP SENSITIVE DATA OUT OF VERSION CONTROL
 lib/config/api_config.dart
+lib/firebase_options.dart
