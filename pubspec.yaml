@@ -1,5 +1,5 @@
 name: krakenwatch
-description: "A new Flutter project."
+description: "Portfolio Tracker for Kraken"
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
@@ -52,6 +52,7 @@ dependencies:
   
   # State management
   flutter_riverpod: ^2.4.9
+  flutter_application_id: ^2.1.0
 
 dev_dependencies:
   flutter_test:
@@ -109,3 +110,11 @@ flutter:
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/to/font-from-package
+
+flutter_application_id:
+  android: 
+    id: "com.kennymeyer.krakenwatch"
+    name: "KrakenWatch"
+  ios:
+    id: "com.kennymeyer.krakenwatch"
+    name: "KrakenWatch"
